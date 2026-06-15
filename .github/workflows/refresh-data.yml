@@ -1,0 +1,60 @@
+name: refresh-data
+
+# Descarga datos frescos de ChileCompra, reconstruye los modelos dbt y
+# commitea los CSV actualizados al repo. Corre solo en los servidores de
+# GitHub: no depende de ninguna máquina local.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"      # cada lunes 06:00 UTC
+  workflow_dispatch:          # permite ejecutarlo manualmente desde la pestaña Actions
+  push:
+    paths:                    # valida los modelos cuando cambia el código dbt
+      - "models/**"
+      - "dbt_project.yml"
+
+permissions:
+  contents: write             # necesario para commitear los datos actualizados
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r pipeline/requirements.txt
+          pip install dbt-duckdb
+
+      - name: Download fresh data (solo en schedule/manual, no en push)
+        if: github.event_name != 'push'
+        run: |
+          python pipeline/intel.py --meses 6
+          mv intel_licitaciones.csv intel_proveedores.csv data/
+
+      - name: dbt build (modelos + tests)
+        env:
+          DBT_PROFILES_DIR: ${{ github.workspace }}
+        run: |
+          dbt deps
+          dbt build
+
+      - name: Commit updated data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/intel_licitaciones.csv data/intel_proveedores.csv
+          if git diff --staged --quiet; then
+            echo "Sin cambios en los datos."
+          else
+            git commit -m "chore: refresh ChileCompra data ($(date -u +%Y-%m-%d))"
+            git push
+          fi

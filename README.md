@@ -51,6 +51,16 @@ dbt build --vars '{data_dir: ../}'
 > **Nota de entorno:** dbt requiere Python 3.11–3.12 (no 3.13/3.14). Con [`uv`](https://docs.astral.sh/uv/):
 > `uv venv --python 3.12 .venv && uv pip install --python .venv dbt-duckdb`
 
+## Actualización automática (CI/CD)
+
+Un GitHub Action (`.github/workflows/refresh-data.yml`) mantiene los datos frescos **sin depender de ninguna máquina local**:
+
+1. **Descarga** los últimos 6 meses de datos abiertos de ChileCompra (`pipeline/intel.py`).
+2. **Reconstruye** los modelos dbt y corre los tests (`dbt build`).
+3. **Commitea** los CSV actualizados al repo.
+
+Se ejecuta cada lunes (cron), de forma manual desde la pestaña *Actions*, y valida los modelos en cada push a `models/`.
+
 ## Calidad de datos
 
 Tests declarativos en dbt (`not_null`, `unique`) sobre claves de negocio y métricas críticas.

@@ -6,3 +6,4 @@ logs/
 .env
 .venv/
 .user.yml
+app.log
