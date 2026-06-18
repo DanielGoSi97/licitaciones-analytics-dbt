@@ -1,0 +1,6 @@
+streamlit
+pandas
+altair
+python-dotenv
+requests
+openpyxl

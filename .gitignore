@@ -1,9 +1,20 @@
-target/
-dbt_packages/
-logs/
-*.duckdb
-*.duckdb.wal
+# Secretos
 .env
+
+# Python
+__pycache__/
+*.pyc
 .venv/
-.user.yml
-app.log
+
+# Logs y artefactos locales
+*.log
+deployment.zip
+lambda_package/
+
+# dbt (dentro de analytics_dbt/)
+analytics_dbt/target/
+analytics_dbt/dbt_packages/
+analytics_dbt/logs/
+analytics_dbt/*.duckdb
+analytics_dbt/*.duckdb.wal
+analytics_dbt/.user.yml

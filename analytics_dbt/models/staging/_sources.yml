@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: chilecompra
+    description: >
+      Datos crudos de licitaciones del Mercado Publico de Chile (ChileCompra),
+      generados por el pipeline de Python (API oficial + datos abiertos masivos).
+      Los CSV se leen directamente desde disco con DuckDB (read_csv_auto), sin
+      necesidad de cargarlos como seeds.
+    tables:
+      - name: vigentes
+        description: Licitaciones vigentes enriquecidas desde la API oficial (un registro por licitacion).
+        meta:
+          external_location: "read_csv_auto('{{ var('data_dir') }}/vigentes.csv', header=true, all_varchar=true, ignore_errors=true)"
+      - name: intel_licitaciones
+        description: Historico de licitaciones (6 meses) desde datos abiertos masivos, grano licitacion.
+        meta:
+          external_location: "read_csv_auto('{{ var('data_dir') }}/intel_licitaciones.csv', header=true, all_varchar=true, ignore_errors=true)"
+      - name: intel_proveedores
+        description: Adjudicaciones a nivel licitacion x proveedor ganador.
+        meta:
+          external_location: "read_csv_auto('{{ var('data_dir') }}/intel_proveedores.csv', header=true, all_varchar=true, ignore_errors=true)"

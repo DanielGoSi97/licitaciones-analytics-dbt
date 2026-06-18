@@ -1,0 +1,13 @@
+# Perfil local de dbt usando DuckDB: corre sin cuenta cloud ni credenciales.
+# El esquema de modelos es agnostico al warehouse; en produccion se materializa
+# sobre BigQuery cambiando unicamente este perfil (ver README).
+licitaciones_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "licitaciones.duckdb"
+      threads: 4
+      extensions:
+        - httpfs
+        - parquet

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Proyecto Licitaciones Públicas de Chile</title>
+<style>
+    @page { size: A4; margin: 18mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', -apple-system, sans-serif;
+        color: #0F172A; font-size: 10.5pt; line-height: 1.55; margin: 0;
+    }
+    h1, h2, h3 { color: #0F172A; letter-spacing: -0.3px; }
+    h2 {
+        font-size: 14pt; color: #115E59; border-bottom: 2.5px solid #0F766E;
+        padding-bottom: 4px; margin-top: 26px;
+    }
+    h3 { font-size: 11.5pt; margin-bottom: 4px; color: #0F766E; }
+    p { margin: 6px 0; text-align: justify; }
+    code {
+        font-family: Consolas, monospace; font-size: 9.5pt; background: #F1F5F9;
+        border: 1px solid #E2E8F0; border-radius: 4px; padding: 0 4px; color: #115E59;
+    }
+    pre {
+        font-family: Consolas, monospace; font-size: 8.8pt; background: #0B3B36; color: #CCFBF1;
+        border-radius: 10px; padding: 14px 16px; overflow-x: hidden; line-height: 1.45;
+    }
+    .hero {
+        background: linear-gradient(120deg, #0B3B36 0%, #115E59 55%, #0F766E 100%);
+        border-radius: 14px; padding: 28px 32px; color: #fff; margin-bottom: 18px;
+    }
+    .hero h1 { color: #fff; margin: 0; font-size: 20pt; }
+    .hero .sub { color: #A7E8DF; font-size: 11pt; margin-top: 6px; }
+    .badge {
+        display: inline-block; background: rgba(255,255,255,0.14); color: #E6FFFA;
+        border: 1px solid rgba(255,255,255,0.25); border-radius: 999px;
+        padding: 2px 12px; font-size: 8.5pt; font-weight: 600; margin: 10px 6px 0 0;
+    }
+    .kpis { display: flex; gap: 10px; margin: 14px 0; }
+    .kpi {
+        flex: 1; border: 1px solid #E2E8F0; border-top: 3px solid #0F766E;
+        border-radius: 10px; padding: 10px 14px; background: #fff;
+    }
+    .kpi .v { font-size: 16pt; font-weight: 800; color: #0F766E; }
+    .kpi .l { font-size: 8pt; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin: 10px 0; }
+    th { background: #115E59; color: #fff; text-align: left; padding: 7px 10px; font-size: 9pt; }
+    td { padding: 7px 10px; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
+    tr:nth-child(even) td { background: #F8FAFC; }
+    .quote {
+        border-left: 4px solid #0F766E; background: #F0FDFA; border-radius: 0 10px 10px 0;
+        padding: 10px 16px; margin: 10px 0; font-style: italic; color: #134E4A;
+    }
+    ul { margin: 6px 0; padding-left: 22px; }
+    li { margin-bottom: 4px; }
+    .pagebreak { page-break-before: always; }
+    .foot { color: #94A3B8; font-size: 8.5pt; margin-top: 30px; border-top: 1px solid #E2E8F0; padding-top: 8px; }
+    strong { color: #0F172A; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>Licitaciones Públicas de Chile</h1>
+    <div class="sub">Pipeline de datos e inteligencia de mercado sobre las compras del Estado · Mercado Público / ChileCompra</div>
+    <span class="badge">Python · pandas · Streamlit · Altair · pydantic</span>
+    <span class="badge">API REST + Datos Abiertos masivos</span>
+    <span class="badge">dbt · DuckDB · GitHub Actions (CI/CD)</span>
+    <span class="badge">Daniel González Simpson · Junio 2026</span>
+</div>
+
+<h2>1. Resumen ejecutivo</h2>
+<p>Este proyecto es un <strong>pipeline de datos de punta a punta</strong> y un <strong>dashboard interactivo</strong> sobre
+las licitaciones públicas de Chile. Combina dos fuentes que ninguna herramienta gratuita cruza: la
+<strong>API en vivo de Mercado Público</strong> (lo que está abierto para postular hoy) y los
+<strong>datos abiertos masivos de ChileCompra</strong> (cómo terminaron ~43.000 licitaciones de los últimos seis meses,
+a nivel de oferta por línea de producto).</p>
+<p>El usuario objetivo es un <strong>proveedor que quiere venderle al Estado</strong>. El dashboard responde tres preguntas
+de manera progresiva: <em>¿qué oportunidades hay y cuándo cierran?</em> (exploración), <em>¿qué exige esta licitación
+específica?</em> (detalle en vivo con cronograma, ítems y montos), y la pregunta diferenciadora que el buscador oficial
+no responde: <em>¿cuánta competencia voy a tener y vale la pena ofertar?</em> (inteligencia de mercado).</p>
+
+<div class="kpis">
+    <div class="kpi"><div class="v">24%</div><div class="l">de las adjudicadas tuvo un solo oferente</div></div>
+    <div class="kpi"><div class="v">14%</div><div class="l">queda desierta (nadie gana)</div></div>
+    <div class="kpi"><div class="v">75%</div><div class="l">adjudicado vs presupuesto (mediana)</div></div>
+    <div class="kpi"><div class="v">43.000</div><div class="l">licitaciones analizadas (6 meses)</div></div>
+</div>
+<p>Estos tres hallazgos sintetizan el valor: <strong>existen nichos con demanda insatisfecha</strong> (baja competencia y
+licitaciones desiertas que el organismo debe relicitar), y empíricamente <strong>se gana ofertando bajo el presupuesto
+publicado</strong>.</p>
+
+<h2>2. Arquitectura del pipeline</h2>
+<pre>
+FUENTE 1 · API Mercado Público (en vivo, con ticket, rate-limited)
+  main.py --solo-cierre      ──►  evolucion.csv          881.000 filas · serie 2020-2026
+  main.py --sin-detalle      ──►  licitaciones_anio.csv   56.000 filas · histórico liviano
+  main.py --estado activas   ──►  vigentes.csv             4.600 filas · enriquecidas 1 a 1
+
+FUENTE 2 · Datos abiertos ChileCompra (masivos, mensuales, sin ticket)
+  intel.py                   ──►  intel_licitaciones.csv  43.000 licitaciones resueltas
+                             ──►  intel_proveedores.csv   22.700 pares proveedor-rubro
+
+TRANSFORMACIÓN · dbt + DuckDB  (repo: github.com/DanielGoSi97/licitaciones-analytics-dbt)
+  staging/  ──►  limpieza, casteo de tipos, flags de competencia
+  marts/    ──►  esquema en estrella: fct_licitaciones, dim_proveedor,
+                 mart_competencia_por_rubro, mart_evolucion_mensual  (+ tests de calidad)
+
+CONSUMO
+  app.py (Streamlit) lee los 5 CSV cacheados y consulta la API en vivo
+  únicamente para el detalle de la licitación que el usuario abre.
+</pre>
+<p>La decisión estructural más importante es la <strong>estrategia de tres profundidades de extracción</strong>. Consultar
+el detalle de una licitación cuesta 2-3 segundos por el rate-limit de la API; enriquecer las 881.000 filas históricas
+habría tomado un mes de cómputo. La solución: serie histórica con el mínimo de campos (rápida), enriquecimiento completo
+solo para las ~4.600 vigentes (3-4 horas), que es donde el detalle aporta valor. Y cuando se necesitó el "cómo terminaron"
+masivo —oferentes, adjudicaciones, proveedores ganadores— no se forzó la API: <strong>se cambió de fuente</strong> a los
+archivos mensuales de datos abiertos, que traen esa información pre-calculada.</p>
+
+<h2>3. Componentes del código</h2>
+<table>
+<tr><th style="width:120px">Archivo</th><th>Rol</th><th>Elementos clave</th></tr>
+<tr><td><code>client.py</code></td>
+    <td>Conector con la API</td>
+    <td>Clase única <code>MercadoPublicoClient</code>; reintentos con backoff exponencial
+        (<em>tenacity</em>). Deliberadamente simple: solo trae JSON.</td></tr>
+<tr><td><code>models.py</code></td>
+    <td>Capa de dominio</td>
+    <td>Modelos <em>pydantic</em> que validan la respuesta; mapeos de negocio (tipo LP/LE/L1,
+        estados 5=Publicada, 7=Desierta, 8=Adjudicada); clasificadores heurísticos por palabras
+        clave como <em>fallback</em> cuando no hay dato estructurado.</td></tr>
+<tr><td><code>main.py</code></td>
+    <td>Extractor CLI (API)</td>
+    <td>CLI con rangos de fecha y 3 niveles de profundidad; manejo explícito del rate-limit
+        (código 10500) con espera y reintento; tolerancia a fallas por fila (una licitación corrupta
+        genera una fila básica, no aborta el proceso); <code>enrich_tender()</code> aplana el JSON
+        anidado en ~25 campos tabulares.</td></tr>
+<tr><td><code>intel.py</code></td>
+    <td>Pipeline de datos abiertos</td>
+    <td>Descarga zips mensuales (~270 MB de CSV, 110 columnas, nivel oferta-línea) y los colapsa
+        en dos agregados livianos; <strong>filtros de calidad de datos</strong>: descarta líneas
+        sobre $20.000M y montos que excedan 300× el presupuesto (la fuente traía una "adjudicación"
+        de $1.700 billones, más que el PIB de Chile).</td></tr>
+<tr><td><code>app.py</code></td>
+    <td>Dashboard Streamlit</td>
+    <td>Fusión de fuentes con deduplicación que prefiere la fila enriquecida; navegación tipo SPA
+        con <code>st.session_state</code> y <code>@st.fragment</code>; vista detalle consulta la API
+        <em>en vivo</em>; carga condicional (la app degrada con elegancia si falta una fuente);
+        link directo a la ficha oficial de cada licitación.</td></tr>
+</table>
+
+<div class="pagebreak"></div>
+
+<h2>4. La capa de inteligencia de mercado (diferenciación)</h2>
+<p>El buscador oficial de Mercado Público resuelve la búsqueda; las herramientas que agregan inteligencia
+(LicitaLab) son de pago, y el Observatorio ChileCompra mira probidad, no oportunidad comercial. El espacio libre
+era la <strong>analítica para decidir dónde competir</strong>, y eso es lo que agrega este proyecto:</p>
+<ul>
+    <li><strong>Pestaña "Inteligencia de mercado":</strong> con filtros por sector oficial, rubro UNSPSC y región:
+        % de adjudicaciones con oferente único, % de desiertas por sector, competencia promedio por rubro,
+        brecha adjudicado/presupuesto y top 15 proveedores por monto (la competencia directa del usuario).</li>
+    <li><strong>Panel "Competencia esperada" en cada detalle:</strong> al abrir una licitación vigente, la app cruza
+        su rubro UNSPSC con el histórico y muestra cuántas se resolvieron en ese rubro, promedio de oferentes,
+        % con oferente único, % desierta y quiénes más ganan ahí — <em>antes</em> de decidir ofertar.</li>
+</ul>
+<p>El cruce técnico: el rubro del detalle en vivo (primer nivel de la categoría UNSPSC de los ítems) se matchea
+contra <code>Rubro1</code> de los datos abiertos, normalizando a mayúsculas. Dos fuentes con esquemas distintos,
+unidas por la taxonomía común.</p>
+
+<h2>5. Decisiones de diseño defendibles</h2>
+<ul>
+    <li><strong>Mediana, no promedio, para el "monto típico":</strong> la distribución de montos tiene cola larga;
+        un solo contrato hospitalario de $16.000M arruina cualquier promedio.</li>
+    <li><strong>Deduplicación con criterio:</strong> una misma licitación aparece en varios meses de los datos abiertos
+        (publicación vs adjudicación); se conserva el período más reciente, que trae el estado final. En el dashboard,
+        ante duplicados se prefiere siempre la fila enriquecida.</li>
+    <li><strong>Resiliencia transversal:</strong> backoff exponencial, manejo del rate-limit 10500, degradación por fila,
+        carga condicional de fuentes en la app.</li>
+    <li><strong>Calidad de datos basada en evidencia:</strong> los umbrales de limpieza ($20.000M por línea, 300× el
+        estimado) salieron de inspeccionar percentiles (p99,9 = $3.400M) y validar los casos extremos uno a uno.</li>
+    <li><strong>Validación automatizada:</strong> la app completa se prueba headless con
+        <code>streamlit.testing.v1.AppTest</code> (cero excepciones, pestañas y KPIs poblados) antes de cada cambio mayor.</li>
+</ul>
+
+<h2>6. Cómo presentar el proyecto</h2>
+<h3>Elevator pitch (30 segundos)</h3>
+<div class="quote">"Construí un pipeline de datos y un dashboard sobre las compras públicas de Chile. Extrae licitaciones
+desde la API de Mercado Público y los datos abiertos de ChileCompra, los limpia y modela, y los presenta orientado a un
+proveedor que quiere venderle al Estado: qué está abierto, cuándo cierra y —lo diferenciador— cuánta competencia
+histórica hay en ese rubro. El 24% de las licitaciones se adjudica con un solo oferente y el 14% queda desierta:
+hay nichos con demanda insatisfecha que el buscador oficial no te muestra."</div>
+
+<h3>Narrativa para entrevista (problema → decisión → resultado)</h3>
+<ol>
+    <li><strong>Problema:</strong> el buscador oficial dice qué existe, pero no ayuda a decidir dónde competir;
+        las herramientas que sí lo hacen son de pago.</li>
+    <li><strong>Restricción técnica:</strong> rate-limit agresivo y detalle caro → estrategia de tres profundidades
+        + segunda fuente masiva para el histórico.</li>
+    <li><strong>Modelamiento:</strong> JSON anidado → tablas planas; nivel oferta-línea → nivel licitación;
+        taxonomía UNSPSC real con fallback heurístico.</li>
+    <li><strong>Producto:</strong> dashboard con persona definida y KPIs elegidos con criterio estadístico.</li>
+    <li><strong>Validación:</strong> tests headless y sanity-checks de los agregados (ahí aparecieron los
+        errores de digitación de la fuente, y se filtraron con umbrales justificados).</li>
+</ol>
+
+<h3>El insight que cierra la conversación</h3>
+<div class="quote">"La brecha mediana entre monto adjudicado y presupuesto es 75%: empíricamente, en este mercado se gana
+ofertando bajo el presupuesto publicado. Eso es un insight accionable que salió del pipeline, no de una opinión."</div>
+
+<h2>7. Capa analítica reproducible (dbt) y automatización CI/CD</h2>
+<p>Sobre los CSV crudos se construyó un <strong>proyecto dbt</strong> que separa la lógica de transformación del
+dashboard y la versiona en SQL: la limpieza deja de estar enterrada en pandas dentro de <code>app.py</code> y pasa a
+modelos declarativos, testeados y documentados. Corre localmente sobre <strong>DuckDB</strong> (cero credenciales,
+<code>dbt build</code> en segundos) y el mismo esquema se materializa en <strong>BigQuery</strong> cambiando solo el
+perfil — es <em>warehouse-agnostic</em>.</p>
+<ul>
+    <li><strong>staging → marts (esquema en estrella):</strong> 3 modelos de limpieza y 4 marts de negocio
+        (<code>fct_licitaciones</code>, <code>dim_proveedor</code>, <code>mart_competencia_por_rubro</code>,
+        <code>mart_evolucion_mensual</code>) sobre las ~43.000 licitaciones.</li>
+    <li><strong>Tests de calidad declarativos:</strong> 16 pruebas <code>not_null</code>/<code>unique</code> sobre claves
+        de negocio y métricas críticas, que corren en cada build.</li>
+    <li><strong>Actualización automática (GitHub Actions):</strong> un workflow programado (semanal) y disparable a mano
+        descarga datos frescos de ChileCompra con <code>intel.py</code>, ejecuta <code>dbt build</code> con sus tests y
+        <strong>commitea los CSV actualizados al repo</strong> — todo en los servidores de GitHub, sin depender de
+        ninguna máquina local.</li>
+</ul>
+<p>El resultado es un <strong>pipeline de datos con CI/CD</strong>: ingesta → transformación versionada → tests →
+publicación, reproducible por cualquiera que clone el repositorio.</p>
+
+<h2>8. Operación</h2>
+<table>
+<tr><th>Acción</th><th>Comando</th><th>Frecuencia sugerida</th></tr>
+<tr><td>Refrescar licitaciones vigentes (enriquecidas)</td><td><code>python main.py --estado activas --salida vigentes.csv</code></td><td>Diaria/semanal (3-4 h)</td></tr>
+<tr><td>Refrescar histórico liviano</td><td><code>python main.py --desde DDMMAAAA --hasta DDMMAAAA --sin-detalle --salida licitaciones_anio.csv</code></td><td>Mensual</td></tr>
+<tr><td>Refrescar inteligencia de mercado</td><td><code>python intel.py --meses 6</code></td><td>Mensual (~5 min, cuando ChileCompra publica el mes)</td></tr>
+<tr><td>Reconstruir modelos analíticos + tests</td><td><code>dbt build</code> (en <code>analytics_dbt/</code>)</td><td>Tras cada refresco de datos</td></tr>
+<tr><td>Actualización automática end-to-end</td><td>GitHub Actions · workflow <code>refresh-data</code></td><td>Automática (lunes) / manual</td></tr>
+<tr><td>Levantar el dashboard</td><td><code>streamlit run app.py</code> → http://localhost:8501</td><td>—</td></tr>
+</table>
+
+<div class="foot">
+Proyecto personal de Daniel González Simpson · Fuentes: API de Mercado Público (api.mercadopublico.cl) y
+Datos Abiertos ChileCompra (datos-abiertos.chilecompra.cl) · Repo analítico: github.com/DanielGoSi97/licitaciones-analytics-dbt
+· Documento generado en junio de 2026.
+</div>
+
+</body>
+</html>

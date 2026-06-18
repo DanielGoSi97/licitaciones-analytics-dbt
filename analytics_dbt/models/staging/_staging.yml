@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_intel_licitaciones
+    description: Historico de licitaciones limpio, con flags de competencia.
+    columns:
+      - name: codigo_externo
+        description: Identificador unico de la licitacion.
+        data_tests:
+          - not_null
+      - name: estado
+        data_tests:
+          - not_null
+      - name: numero_oferentes
+        description: Numero de oferentes que participaron.
+      - name: brecha_adj_estimado
+        description: Ratio monto adjudicado / monto estimado.
+
+  - name: stg_intel_proveedores
+    description: Adjudicaciones licitacion x proveedor ganador.
+    columns:
+      - name: rut_proveedor
+        data_tests:
+          - not_null
+      - name: codigo_externo
+        data_tests:
+          - not_null
+
+  - name: stg_licitaciones_vigentes
+    description: Licitaciones vigentes desde la API oficial.
+    columns:
+      - name: codigo_externo
+        data_tests:
+          - not_null
+          - unique

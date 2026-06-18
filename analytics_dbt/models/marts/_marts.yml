@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: fct_licitaciones
+    description: Tabla de hechos con una fila por licitacion historica y metricas de competencia/adjudicacion.
+    columns:
+      - name: codigo_externo
+        description: Identificador unico de la licitacion.
+        data_tests:
+          - not_null
+          - unique
+      - name: estado
+        data_tests:
+          - not_null
+      - name: es_desierta
+        data_tests:
+          - not_null
+      - name: brecha_adj_estimado
+        description: Ratio monto adjudicado / monto estimado.
+
+  - name: dim_proveedor
+    description: Dimension de proveedores adjudicados con metricas de actividad.
+    columns:
+      - name: rut_proveedor
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mart_competencia_por_rubro
+    description: Inteligencia de mercado por rubro (competencia, desiertas, brecha de precios).
+    columns:
+      - name: rubro
+        data_tests:
+          - not_null
+          - unique
+      - name: pct_oferente_unico
+        description: Proporcion de licitaciones con un solo oferente.
+
+  - name: mart_evolucion_mensual
+    description: Serie de tiempo mensual del mercado.
+    columns:
+      - name: periodo
+        data_tests:
+          - not_null
+          - unique

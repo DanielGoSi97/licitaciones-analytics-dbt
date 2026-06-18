@@ -10,8 +10,8 @@ on:
   workflow_dispatch:          # permite ejecutarlo manualmente desde la pestaña Actions
   push:
     paths:                    # valida los modelos cuando cambia el código dbt
-      - "models/**"
-      - "dbt_project.yml"
+      - "analytics_dbt/models/**"
+      - "analytics_dbt/dbt_project.yml"
 
 permissions:
   contents: write             # necesario para commitear los datos actualizados
@@ -19,6 +19,9 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: analytics_dbt   # el proyecto dbt vive en esta subcarpeta
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -41,7 +44,7 @@ jobs:
 
       - name: dbt build (modelos + tests)
         env:
-          DBT_PROFILES_DIR: ${{ github.workspace }}
+          DBT_PROFILES_DIR: ${{ github.workspace }}/analytics_dbt
         run: |
           dbt deps
           dbt build
