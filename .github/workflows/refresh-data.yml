@@ -6,7 +6,7 @@ name: refresh-data
 
 on:
   schedule:
-    - cron: "0 6 * * 1"      # cada lunes 06:00 UTC
+    - cron: "0 6 * * *"      # todos los días 06:00 UTC (03:00 Chile aprox.)
   workflow_dispatch:          # permite ejecutarlo manualmente desde la pestaña Actions
   push:
     paths:                    # valida los modelos cuando cambia el código dbt
