@@ -27,7 +27,8 @@ MESES_ORDEN = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 
 st.set_page_config(page_title="Licitaciones Públicas · Chile", layout="wide",
-                   page_icon="📋", initial_sidebar_state="collapsed")
+                   page_icon="https://dgonzsim.cl/favicon.svg",
+                   initial_sidebar_state="collapsed")
 
 st.markdown(f"""
 <style>
@@ -40,7 +41,10 @@ st.markdown(f"""
         font-family:'Material Symbols Rounded' !important;
     }}
     .stApp {{ background-color:{FONDO}; }}
-    .block-container {{ padding-top:1.2rem; padding-bottom:2rem; max-width:1280px; }}
+    /* Ocultar el header/toolbar por defecto de Streamlit (barra blanca superior) */
+    header[data-testid="stHeader"] {{ display:none; }}
+    div[data-testid="stToolbar"] {{ display:none; }}
+    .block-container {{ padding-top:2rem; padding-bottom:2rem; max-width:1280px; }}
     h1,h2,h3,h4 {{ color:{TXT}; font-weight:700; letter-spacing:-0.3px; }}
 
     /* ---- Hero ---- */
@@ -150,6 +154,11 @@ st.markdown(f"""
     .org-cap {{ color:{TXT_SUAVE}; font-size:0.74rem; }}
 </style>
 """, unsafe_allow_html=True)
+
+st.markdown(
+    f'<a href="/" target="_self" style="color:{PRIMARIO};font-weight:600;'
+    f'font-size:0.85rem;text-decoration:none;">← Volver al portafolio</a>',
+    unsafe_allow_html=True)
 
 
 def _leer(path):
