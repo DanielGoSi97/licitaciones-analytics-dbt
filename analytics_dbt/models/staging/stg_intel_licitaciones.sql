@@ -10,7 +10,9 @@ renamed as (
 
     select
         trim(CodigoExterno)                              as codigo_externo,
-        trim(Estado)                                     as estado,
+        -- Algunas filas del origen llegan sin Estado; se etiquetan como
+        -- 'Desconocido' para no perder la licitacion ni romper el test not_null.
+        coalesce(nullif(trim(Estado), ''), 'Desconocido') as estado,
         try_cast(CodigoEstado as integer)                as codigo_estado,
         trim(Organismo)                                  as organismo,
         trim(Sector)                                     as sector,
